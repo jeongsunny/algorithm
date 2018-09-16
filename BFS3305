@@ -1,0 +1,104 @@
+package ad;
+
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+
+public class back3055 {
+
+	static int N;
+	static int M;
+	static char map[][];
+	static boolean water[][];
+	static int num[][];
+	static Queue<Point> q = new LinkedList<Point>();
+	static Queue<Point> w = new LinkedList<Point>();
+	static int result;
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		
+		N=sc.nextInt();
+		M=sc.nextInt();
+		map = new char[N][M];
+		water = new boolean[N][M];
+		num = new int[N][M];
+		
+		for(int i=0; i<N; i++){
+			map[i]=sc.next().toCharArray();
+		}
+		for(int i=0; i<N; i++){
+			for(int j=0; j<M; j++){
+				if(map[i][j] == 'S'){
+					q.add(new Point(i,j));
+				}
+				if(map[i][j] == '*'){
+					w.add(new Point(i,j));
+					water[i][j] = true;
+				}
+			}
+		}
+		result = 0;
+		while(true){
+			++result;
+	        if (q.size() == 0) {
+	            System.out.println("KAKTUS");
+	            return;
+	        }
+	 
+	        BFS();
+	        if (BFS_S()) {
+	            System.out.println(result);
+	            return;
+	        }
+		}
+		
+		//System.out.println("");
+	}
+	static int[] dx={-1,0,1,0};
+	static int[] dy={0,-1,0,1};
+	private static void BFS() {
+		// TODO Auto-generated method stub
+		int size = w.size();
+		for(int t = 0; t < size; t++){
+			Point wat = w.remove();
+			
+			for(int i=0; i<4; i++){
+				int wx = wat.x + dx[i];
+				int wy = wat.y + dy[i];
+				
+				if(wx >= 0 && wy >= 0 && wx < N && wy < M && map[wx][wy] == '.'){
+					map[wx][wy] = '*';
+					//water[wx][wy] = true;
+					w.add(new Point(wx,wy));		
+				}	
+			}
+		}
+	}
+		
+	private static boolean BFS_S() {
+		// TODO Auto-generated method stub
+		int size = q.size();
+		for(int t = 0; t < size; t++){
+			Point p = q.remove();
+			
+			for(int i=0; i<4; i++){
+				int x=p.x + dx[i];
+				int y=p.y + dy[i];
+				
+				if(x >= 0 && y >= 0 && x < N && y < M && map[x][y] == '.'){
+					map[x][y] = 'S';
+					//num[x][y] = num[p.x][p.y] +1;
+					q.add(new Point(x,y));
+				}else if(x >= 0 && y >= 0 && x < N && y < M && map[x][y] == 'D'){
+					q.add(new Point(x,y));
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+}
